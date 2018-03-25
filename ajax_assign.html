@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ajax Assignment</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	//question 1
+	$('input[name="showHint"]').keyup(function showHint(str){
+		if (str.length == 0) {
+				$('#txtHint').html(val($(this))='');
+				return;
+			} else {
+				var xmlhttp = new XMLHttpRequest();
+        		xmlhttp.onreadystatechange = function(){
+        			if (this.readyState == 4 && this.status == 200) { 
+        			$('#txtHint').html(val($(this))=responseText);
+        				}
+        		};
+        		xmlhttp.open("GET", "gethint.php?q=" + str, true);
+       			xmlhttp.send();
+			}
+	});
+
+	//question 2
+	function validate (){
+		$.ajax ({
+		type:'POST',
+		url:'question2.php',
+		data:{'username':$('input[name="username"]').val(),'password':$('input[name="password"]').val()
+			},
+		success: function (data){
+			if (data) {
+				alert('Correct');
+			} else {
+				alert('Error');
+			}
+		}
+	})
+	}
+	
+
+	//question 3
+	$('input[name="s_id"]').keyup(function(){
+		var student_id=$('input[name="s_id"]').val();
+		var result_name='';
+		var result_description='';
+		$.getJSON('students.json', function(data){
+			for (var i = 0; i < data.students.length; i++) {
+				if (data.students[i]["stuID"]==student_id) {
+					result_name=data.students[i]["stuName"];
+					result_description=data.students[i]["description"];
+				} else {
+					result_name = 'Error';
+					result_description = 'Error';
+				}
+			}
+		});
+		$('input[name="s_name"]').val(result_name);
+		$('input[name="s_des"]').val(result_description);
+	});
+	
+
+	//question 4
+
+
+})
+			
+</script>
+
+</head>
+<body>
+<p>question 1</p>
+<p><b>Start typing a name in the input field below:</b></p>
+<form> 
+First name: <input type="text" name="showHint">
+</form>
+<p>Suggestions: <span id="txtHint"></span></p>
+
+
+<br><br><br>
+<p>question 2</p>
+<form method='POST'>
+	username:
+	<input type="text" name="username">
+ 	<br>
+	password:
+	<input type="password" name="password">
+	<input type="submit" name="submit" onclick="validate()">
+</form>
+<div id="msg"></div>
+
+
+<br><br><br>
+<p>question 3</p>
+<label>
+	Please input Student ID:
+	<input type="text" name="s_id">
+</label><br>
+<label>
+	Student Name:
+	<input type="text" name="s_name" readonly>
+</label><br>
+<label>
+	Student Description:
+	<input type="text" name="s_des" readonly>
+</label>
+
+
+<br><br><br>
+<p id="q4">question 4</p>
+<style type="text/css">
+.active{
+	display: inline-block;
+}
+.hidden{
+	display: none;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('a').click(function(){
+		var para = $(this).attr('id').substr(0,6);
+		$('.'+para).removeClass('hidden').addClass('active').siblings().removeClass('active').addClass('hidden');
+	})
+
+	$('input').change(function(){
+		//disable select button when input is not filled.
+		if($("input[name='sel_p_id']").val()!=""||$("input[name='sel_p_name']").val()!=""){
+			$(".select button").attr('disabled',false);
+		}else{
+			$(".select button").attr('disabled',true);
+		}
+
+		//complete the jquery control for update and delete button.
+	})
+
+
+})
+</script>
+<div><a id="select_c" href="#q4">Select</a>|<a id="update_c" href="#q4">Update</a>|<a id="delete_c" href="#q4">Delete</a></div>
+<div>
+<div class="select active">
+	Product ID: <input type="text" name="sel_p_id"><br>
+	Product Name:<input type="text" name="sel_p_name"><br>
+	<button disabled>Select</button>
+</div>
+<div class="update hidden">
+	Product ID: <input type="text" name="upd_p_id"><br>
+	Quantity from&nbsp;<input type="number" name="upd_p_q_orign">&nbsp;to&nbsp;<input type="number" name="upd_p_q_cur"><br>
+	<button >Update</button>
+</div>
+<div class="delete hidden">
+	Product ID: <input type="text" name="del_p_id"><br>
+	<button >Delete</button>
+</div>
+</div>
+<br>
+<div id="result">
+	
+</div>
+<br><br><br>
+<p id="q5">question 5</p>
+<script type="text/javascript">
+//Please give the output of the following code:
+const arr = [10, 12, 15, 21];
+for (var i = 0; i < arr.length; i++) {
+  setTimeout(function() {
+    console.log('Index: ' + i + ', element: ' + arr[i]);
+  }, 3000);
+}
+
+//Figure it out how to ouput the value it should be and give the solution below.
+</script>
+</body>
+</html>
