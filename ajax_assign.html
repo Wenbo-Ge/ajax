@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,38 +10,32 @@
 $(document).ready(function(){
 
 	//question 1
-	$('input[name="showHint"]').keyup(function showHint(str){
-		if (str.length == 0) {
-				$('#txtHint').html(val($(this))='');
-				return;
-			} else {
-				var xmlhttp = new XMLHttpRequest();
-        		xmlhttp.onreadystatechange = function(){
-        			if (this.readyState == 4 && this.status == 200) { 
-        			$('#txtHint').html(val($(this))=responseText);
-        				}
-        		};
-        		xmlhttp.open("GET", "gethint.php?q=" + str, true);
-       			xmlhttp.send();
-			}
+	$('input[name="showHint"]').keyup(function(){
+		if ($('input[name="showHint"]').val()==0) {
+			$('#txtHint').html('');
+			return;
+		} else {
+			$.get('gethint.php?q=' +$('input[name="showHint"]').val(), function(data){
+				$('#txtHint').html(data);
+			});
+		}
 	});
 
 	//question 2
-	function validate (){
-		$.ajax ({
-		type:'POST',
-		url:'question2.php',
-		data:{'username':$('input[name="username"]').val(),'password':$('input[name="password"]').val()
-			},
-		success: function (data){
-			if (data) {
-				alert('Correct');
+	$('input[name="username"]','input[name="password"]').keyup(function(){
+		var username=$('input[name="username"]').val();
+		var password=$('input[name="password"]').val();
+		$.post('question2.php', {
+			phpName:username, phpPassword: password
+		}, function(data){
+			if (data=='success') {
+				$('#msg').html(data);
 			} else {
-				alert('Error');
+				$('#msg').html(data);
 			}
-		}
-	})
-	}
+		});
+	});
+	
 	
 
 	//question 3
@@ -64,9 +61,36 @@ $(document).ready(function(){
 
 	//question 4
 
+	 $('button#select').click(function(){
+	 	var productID = $('input[name="sel_p_id"]').val();
+	 	var productName = $('input[name="sel_p_name"]').val();
+	 	var para = 'id=' + productID + '&name=' + productName + '&option=select';
+	 	$.get('assignment15-database.php?' + para, function(data){
+	 		$('#result').html(data);
+	 	});
+	 });
 
-})
-			
+	 $('button#update').click(function(){
+	 	var productID = $('input[name="upd_p_id"]').val();
+	 	var productOld = $('input[name="upd_p_q_orign"]').val();
+	 	var productNew = $('input[name="upd_p_q_cur"]').val();
+	 	var para = 'id='+productID+'&old='+productOld+'&new='+productNew+'&option=update';
+	 	$.get('assignment15-database.php?'+para, function(data){
+	 		$('#result').html(data);	
+	 	});
+	 });
+
+
+
+	 $('button#delete').click(function(){
+	 	var productID=$('input[name="del_p_id"]').val();
+	 	var para = 'id='+productID+'&option=delete';
+	 	$.get('assignment15-database.php?'+para, function(data){
+	 		$(#result).html(data);
+	 	});
+	 });
+
+})		
 </script>
 
 </head>
@@ -87,7 +111,7 @@ First name: <input type="text" name="showHint">
  	<br>
 	password:
 	<input type="password" name="password">
-	<input type="submit" name="submit" onclick="validate()">
+	<input type="submit" name="submit">
 </form>
 <div id="msg"></div>
 
@@ -144,16 +168,16 @@ $(document).ready(function(){
 <div class="select active">
 	Product ID: <input type="text" name="sel_p_id"><br>
 	Product Name:<input type="text" name="sel_p_name"><br>
-	<button disabled>Select</button>
+	<button disabled id="select">Select</button>
 </div>
 <div class="update hidden">
 	Product ID: <input type="text" name="upd_p_id"><br>
 	Quantity from&nbsp;<input type="number" name="upd_p_q_orign">&nbsp;to&nbsp;<input type="number" name="upd_p_q_cur"><br>
-	<button >Update</button>
+	<button id="update">Update</button>
 </div>
 <div class="delete hidden">
 	Product ID: <input type="text" name="del_p_id"><br>
-	<button >Delete</button>
+	<button id="select">Delete</button>
 </div>
 </div>
 <br>
@@ -166,9 +190,12 @@ $(document).ready(function(){
 //Please give the output of the following code:
 const arr = [10, 12, 15, 21];
 for (var i = 0; i < arr.length; i++) {
-  setTimeout(function() {
-    console.log('Index: ' + i + ', element: ' + arr[i]);
-  }, 3000);
+	var a = function(i){
+		return function(){
+            console.log('Index: ' + i + ', element: ' + arr[i]);
+        }
+	}
+  	setTimeout(a(i), 3000);
 }
 
 //Figure it out how to ouput the value it should be and give the solution below.
