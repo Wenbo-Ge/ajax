@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,91 +5,105 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-
+// ??什么时候要用post get？取数据库的值需要post get 方法吗
+// post get 方法能将数据传给服务器进行交互
 	//question 1
-	$('input[name="showHint"]').keyup(function(){
-		if ($('input[name="showHint"]').val()==0) {
-			$('#txtHint').html('');
+	$("input[name='showHint']").keyup(function(){
+		var str = $(this).val();
+		if(str==""){
 			return;
-		} else {
-			$.get('gethint.php?q=' +$('input[name="showHint"]').val(), function(data){
-				$('#txtHint').html(data);
+		}else{
+			$.get("gethint.php?q=" + str, function(data){
+				console.log(data);
+				$('#txtHint').text(data);
 			});
 		}
-	});
+	})
 
 	//question 2
-	$('input[name="username"]','input[name="password"]').keyup(function(){
-		var username=$('input[name="username"]').val();
-		var password=$('input[name="password"]').val();
-		$.post('question2.php', {
-			phpName:username, phpPassword: password
-		}, function(data){
-			if (data=='success') {
-				$('#msg').html(data);
-			} else {
-				$('#msg').html(data);
-			}
-		});
-	});
-	
-	
+	function submitNow(){
+      var name = $("input[name='username']").val();
+      var password = $("input[name='password']").val();
+      $.ajax({
+        url:'test-answer.php',
+        data:{
+          username:name,
+          password:password
+        },
+        type:'POST',
+        dataType:'json',
+        success : function(data){
+          $("#msg").text(data.res);
+        }
+      })
+    }
+    $('form').on('submit',function(e){
+    	e.preventDefault();
+    	var name = $("input[name='username']").val();
+    	var password = $("input[name='password']").val();
+    	if (name != '' && password!=''){
+    		submitNow();
+    	}else{
+    		$("#msg").text("Please double check your input.");
+    	}
+    })
 
 	//question 3
-	$('input[name="s_id"]').keyup(function(){
-		var student_id=$('input[name="s_id"]').val();
-		var result_name='';
-		var result_description='';
-		$.getJSON('students.json', function(data){
-			for (var i = 0; i < data.students.length; i++) {
-				if (data.students[i]["stuID"]==student_id) {
-					result_name=data.students[i]["stuName"];
-					result_description=data.students[i]["description"];
-				} else {
-					result_name = 'Error';
-					result_description = 'Error';
+	$("input[name='s_id']").keyup(function(){
+		var stu_id=$("input[name='s_id']").val();
+		var response_name = "";
+		var response_des = "";
+		$.getJSON("students.json", function(data){
+			console.log(data);
+			for(var i=0; i<data.students.length; i++){
+				if(data.students[i]["stuID"]==stu_id){
+					response_name = data.students[i]["stuName"];
+					response_des = data.students[i]["description"];
+					console.log(response_name);
+					$("input[name='s_name']").val(response_name);
+					$("input[name='s_des']").val(response_des);
+					break;
+				}else{
+					response_name = "Not found.";
+					response_des = "Not found.";
+					$("input[name='s_name']").val(response_name);
+					$("input[name='s_des']").val(response_des);
 				}
 			}
 		});
-		$('input[name="s_name"]').val(result_name);
-		$('input[name="s_des"]').val(result_description);
-	});
-	
+	})
 
 	//question 4
+	$(".select button").click(function(){
+		var sel_p_id = $("input[name='sel_p_id']").val();
+		var sel_p_name = $("input[name='sel_p_name']").val();
+		$.post("test-answer.php",
+			{ sel_p_id: sel_p_id, sel_p_name: sel_p_name },
+			function(data, status){
+				$('#result').html(data);
+			});
+	});
+	$(".update button").click(function(){
+		var upd_p_id = $("input[name='upd_p_id']").val();
+		var upd_p_q_orign = $("input[name='upd_p_q_orign']").val();
+		var upd_p_q_cur = $("input[name='upd_p_q_cur']").val();
+		$.post("test-answer.php",
+			{ upd_p_id: upd_p_id, upd_p_q_orign: upd_p_q_orign, upd_p_q_cur: upd_p_q_cur},
+			function(data, status){
+				$('#result').html(data);
+			});				
+	});
+	$(".delete button").click(function(){
+		var del_p_id = $("input[name='del_p_id']").val();
+		$.post("test-answer.php",
+			{ del_p_id: del_p_id },
+			function(data, status){
+				$('#result').html(data);
+			});
+	})
 
-	 $('button#select').click(function(){
-	 	var productID = $('input[name="sel_p_id"]').val();
-	 	var productName = $('input[name="sel_p_name"]').val();
-	 	var para = 'id=' + productID + '&name=' + productName + '&option=select';
-	 	$.get('assignment15-database.php?' + para, function(data){
-	 		$('#result').html(data);
-	 	});
-	 });
-
-	 $('button#update').click(function(){
-	 	var productID = $('input[name="upd_p_id"]').val();
-	 	var productOld = $('input[name="upd_p_q_orign"]').val();
-	 	var productNew = $('input[name="upd_p_q_cur"]').val();
-	 	var para = 'id='+productID+'&old='+productOld+'&new='+productNew+'&option=update';
-	 	$.get('assignment15-database.php?'+para, function(data){
-	 		$('#result').html(data);	
-	 	});
-	 });
-
-
-
-	 $('button#delete').click(function(){
-	 	var productID=$('input[name="del_p_id"]').val();
-	 	var para = 'id='+productID+'&option=delete';
-	 	$.get('assignment15-database.php?'+para, function(data){
-	 		$(#result).html(data);
-	 	});
-	 });
-
-})		
+})
 </script>
-
 </head>
 <body>
 <p>question 1</p>
@@ -168,16 +179,16 @@ $(document).ready(function(){
 <div class="select active">
 	Product ID: <input type="text" name="sel_p_id"><br>
 	Product Name:<input type="text" name="sel_p_name"><br>
-	<button disabled id="select">Select</button>
+	<button disabled>Select</button>
 </div>
 <div class="update hidden">
 	Product ID: <input type="text" name="upd_p_id"><br>
 	Quantity from&nbsp;<input type="number" name="upd_p_q_orign">&nbsp;to&nbsp;<input type="number" name="upd_p_q_cur"><br>
-	<button id="update">Update</button>
+	<button >Update</button>
 </div>
 <div class="delete hidden">
 	Product ID: <input type="text" name="del_p_id"><br>
-	<button id="select">Delete</button>
+	<button >Delete</button>
 </div>
 </div>
 <br>
@@ -185,20 +196,5 @@ $(document).ready(function(){
 	
 </div>
 <br><br><br>
-<p id="q5">question 5</p>
-<script type="text/javascript">
-//Please give the output of the following code:
-const arr = [10, 12, 15, 21];
-for (var i = 0; i < arr.length; i++) {
-	var a = function(i){
-		return function(){
-            console.log('Index: ' + i + ', element: ' + arr[i]);
-        }
-	}
-  	setTimeout(a(i), 3000);
-}
-
-//Figure it out how to ouput the value it should be and give the solution below.
-</script>
 </body>
 </html>
