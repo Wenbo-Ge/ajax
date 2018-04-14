@@ -13,6 +13,7 @@ $(document).ready(function(){
 		if(str==""){
 			return;
 		}else{
+			//什么时候要用？q=，什么时候可以直接引用.php? 如果不需要调取参数，就不用加q
 			$.get("gethint.php?q=" + str, function(data){
 				console.log(data);
 				$('#txtHint').text(data);
@@ -35,10 +36,14 @@ $(document).ready(function(){
         success : function(data){
           $("#msg").text(data.res);
         }
+        //验证无反应？？
       })
     }
+    //e和preventDefault（）的意思
+    //不让input刷新界面
     $('form').on('submit',function(e){
     	e.preventDefault();
+
     	var name = $("input[name='username']").val();
     	var password = $("input[name='password']").val();
     	if (name != '' && password!=''){
@@ -49,6 +54,7 @@ $(document).ready(function(){
     })
 
 	//question 3
+	// 为什么用keyup，jquery中比较常见的方法有哪些？click
 	$("input[name='s_id']").keyup(function(){
 		var stu_id=$("input[name='s_id']").val();
 		var response_name = "";
@@ -62,6 +68,7 @@ $(document).ready(function(){
 					console.log(response_name);
 					$("input[name='s_name']").val(response_name);
 					$("input[name='s_des']").val(response_des);
+					//还是对break不是特别理解，遍历所有元素，找到后就要break退出
 					break;
 				}else{
 					response_name = "Not found.";
@@ -196,5 +203,18 @@ $(document).ready(function(){
 	
 </div>
 <br><br><br>
+<p id="q5">question 5</p>
+<script type="text/javascript">
+//Please give the output of the following code:
+const arr = [10, 12, 15, 21];
+for (var i = 0; i < arr.length; i++) {
+	function display(){
+		console.log('Index: ' + i + ', element: ' + arr[i]);
+	}
+  setTimeout(display(), 3000);
+}
+
+//Figure it out how to ouput the value it should be and give the solution below.
+</script>
 </body>
 </html>

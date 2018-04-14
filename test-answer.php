@@ -7,15 +7,16 @@ $servername = 'localhost';  // mysql服务器主机地址
 $username = 'root';            // mysql用户名
 $password = 'root';          // mysql用户名密码
 
-$sel_p_id=$_POST['sel_p_id'];
-$sel_p_name=$_POST['sel_p_name'];
+//isset判断是否被赋值
+$sel_p_id= isset($_POST['sel_p_id']) ? $_POST['sel_p_id'] : "";
+$sel_p_name=isset($_POST['sel_p_name']) ? $_POST['sel_p_name'] : "";
 //$_REQUEST
 
-$upd_p_id=$_POST['upd_p_id'];
-$upd_p_q_orign=$_POST['upd_p_q_orign'];
-$upd_p_q_cur=$_POST['upd_p_q_cur'];
+$upd_p_id=isset($_POST['upd_p_id']) ? $_POST['upd_p_id'] : "";
+$upd_p_q_orign=isset($_POST['upd_p_q_orign']) ? $_POST['upd_p_q_orign'] : "";
+$upd_p_q_cur=isset($_POST['upd_p_q_cur']) ? $_POST['upd_p_q_cur'] : "";
 
-$del_p_id=$_POST['del_p_id'];
+$del_p_id=isset($_POST['del_p_id']) ? $_POST['del_p_id'] : "";
 
 if($a&&$b){
 	$c="xin";
